@@ -1,6 +1,6 @@
 # Style Guide (STYLE_GUIDE.md)
 
-This document establishes the coding conventions for Home-ERP across Python, Django, Modern Vanilla CSS, Unpoly, and Web Components.
+This document establishes the coding conventions for Home-ERP across Python, Django, Modern Vanilla CSS (Warm Hearth design system), Unpoly, and Web Components.
 
 ## Python and Django Conventions
 
@@ -73,51 +73,43 @@ class ExpenseSelector:
         )
 ```
 
-## Frontend Standards
+## Frontend Standards: Warm Hearth Design System
 
-### 1. Modern Vanilla CSS
-- Use `@layer` to structure cascade precedence:
-  ```css
-  @layer reset, tokens, base, layout, components, utilities;
-  ```
-- Use CSS Custom Properties (Design Tokens) for colors, typography, spacing, and radii:
-  ```css
-  :root {
-    --color-primary: #2563eb;
-    --color-surface: #ffffff;
-    --radius-atom: 12px;
-    --radius-container: 24px;
-  }
-  ```
-- Use CSS Grid and Subgrid for data tables and form grids.
-- Use Container Queries (`@container`) for responsive cards and compact dashboard panels.
+### 1. Cascade Layer Hierarchy
+Every CSS file must be organized under cascade layers:
+```css
+@layer reset, tokens, base, layout, components, utilities;
+```
 
-### 2. Standard Django Templates
-- Use built-in template inheritance (`{% extends "base.html" %}`, `{% block content %}`).
-- Use `{% include "path/partial.html" %}` for reusable UI snippets. No custom component DSL required.
+### 2. Design Tokens (Warm Hearth Palette)
+Tokens are defined on `:root` and adapted for dark mode via `[data-theme="dark"]`:
+- **Canvas & Surfaces**: `--color-bg-canvas` (`#FAF6F0`), `--color-bg-surface` (`#FFFFFF`), `--color-bg-surface-warm` (`#F4EFE6`).
+- **Brand & Accents**: `--color-primary` (`#C87D55`, Terracotta), `--color-secondary` (`#87A987`, Sage), `--color-warning` (`#E9C46A`, Wheat), `--color-danger` (`#D96B6B`, Brick Rose).
+- **Text**: `--color-text-primary` (`#2E2A27`), `--color-text-secondary` (`#5C554F`), `--color-text-muted` (`#8A8178`).
+- **Radii**: `--radius-atom` (`10px`), `--radius-card` (`18px`), `--radius-pill` (`9999px`).
+- **Typography**: `--font-serif` (headers), `--font-sans` (body).
 
-### 3. Unpoly (Server-Driven Navigation & Interactions)
-- Use `[up-follow]` on links for seamless page navigation.
-- Use `[up-target]` to specify partial target updates:
-  ```html
-  <a href="/inventory/items/" up-follow up-target="#pantry-table">Filter Items</a>
-  ```
-- Use `[up-layer="new"]` or `[up-modal]` for modal interactions:
-  ```html
-  <a href="/finances/expenses/create/" up-layer="new modal" up-accept-location="/finances/expenses/">
-    Add Expense
-  </a>
-  ```
-- Use `[up-validate]` on form fields for real-time server validation.
+### 3. Classless Base HTML Styling (`@layer base`)
+- Forms and form controls (`input`, `select`, `textarea`) are pre-styled with background `--color-bg-input`, subtle border, and 44px minimum touch targets. Do not apply utility classes for basic form styling.
+- Headings (`h1` through `h4`) automatically render with `--font-serif`.
+- Tables (`<table>`, `<th>`, `<td>`) automatically render with clean domestic padding and warm borders.
+- Dialogs (`<dialog>`) automatically render with rounded corners and frosted glass backdrops.
 
-### 4. Vanilla JS & Web Components
-- For purely local state (e.g., custom date pickers, numeric steppers, barcode scanner cameras), use native Custom Elements:
-  ```javascript
-  class QuantityStepper extends HTMLElement {
-    connectedCallback() {
-      // native event listeners
-    }
-  }
-  customElements.define('quantity-stepper', QuantityStepper);
-  ```
-- Keep client JavaScript minimal, vanilla, and decoupled from server state.
+### 4. Component Classes (`@layer components`)
+Compound UI elements use semantic component classes:
+- `.btn`, `.btn-primary`, `.btn-secondary`, `.btn-outline`, `.btn-ghost`
+- `.card`, `.card-header`, `.card-title`, `.card-body`
+- `.badge`, `.badge-success`, `.badge-warning`, `.badge-danger`, `.badge-terracotta`
+- `.metric-card`, `.metric-label`, `.metric-value`
+- `.data-table-container`, `.data-table`, `.data-table--zebra`
+- `.stepper`, `.stepper-btn`, `.stepper-value`
+
+### 5. Unpoly (Server-Driven Navigation & Fragments)
+- Use `[up-follow]` on standard links for partial page navigation.
+- Use `[up-target]` to specify DOM fragment replacement.
+- Use `[up-layer="new modal"]` or `[up-modal]` for server-rendered modals.
+- Use `[up-validate]` on form fields to trigger instant server validation.
+
+### 6. Vanilla JS & Web Components
+- Use native Web Components (Custom Elements) for client-only stateful widgets (e.g., barcode scanners, quantity steppers, local charts).
+- Keep client JavaScript self-contained and free of external runtime frameworks.

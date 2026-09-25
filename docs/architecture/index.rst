@@ -1,7 +1,7 @@
 Architecture Overview
 =====================
 
-This section defines the core architectural principles, tenancy isolation model, and code organization of Home-ERP.
+This section defines the core architectural principles, tenancy isolation model, code organization, and visual design system of Home-ERP.
 
 .. toctree::
    :maxdepth: 2
@@ -9,4 +9,5 @@ This section defines the core architectural principles, tenancy isolation model,
    overview
    household-tenancy
    service-layer
+   design-system
    adr/index
