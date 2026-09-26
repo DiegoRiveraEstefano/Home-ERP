@@ -1,0 +1,113 @@
+@layer tokens {
+  :root {
+    /* Surfaces & Canvas */
+    --color-bg-canvas: #FAF6F0;       /* Warm oat canvas */
+    --color-bg-surface: #FFFFFF;      /* Ivory white surface */
+    --color-bg-surface-warm: #F4EFE6; /* Warm sand for subtle depth */
+    --color-bg-input: #F7F3EC;        /* Soft input surface */
+    --color-border-subtle: #E8E0D5;   /* Warm hairline boundary */
+    --color-border-strong: #D4C9BC;   /* Structured divider */
+    --color-border-focus: #C87D55;    /* Terracotta focus ring */
+
+    /* Brand & Domestic Status */
+    --color-primary: #C87D55;         /* Warm terracotta */
+    --color-primary-hover: #B56B44;
+    --color-primary-light: #F7ECE4;   /* Soft terracotta tint */
+    --color-secondary: #87A987;       /* Sage green */
+    --color-secondary-hover: #759775;
+    --color-secondary-light: #EDF3ED;
+    --color-warning: #E9C46A;         /* Warm wheat */
+    --color-warning-hover: #D8B359;
+    --color-warning-light: #FCF7EB;
+    --color-warning-text: #946E1E;
+    --color-danger: #D96B6B;          /* Soft brick rose */
+    --color-danger-hover: #C55858;
+    --color-danger-light: #FBEFEF;
+    --color-info: #789BB5;            /* Slate denim */
+    --color-info-hover: #678AA4;
+    --color-info-light: #EDF3F7;
+
+    /* Text & Typography */
+    --color-text-primary: #2E2A27;    /* Soft charcoal */
+    --color-text-secondary: #5C554F;  /* Warm stone */
+    --color-text-muted: #8A8178;      /* Dried clay */
+    --color-text-inverse: #FFFFFF;
+
+    /* Backdrop & Overlay */
+    --color-backdrop: rgba(46, 42, 39, 0.4);
+
+    /* Typography */
+    --font-serif: "Newsreader", "Fraunces", Georgia, serif;
+    --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+    /* Radii */
+    --radius-atom: 10px;              /* Buttons, inputs, chips */
+    --radius-card: 18px;              /* Cards, panels, dialogs */
+    --radius-pill: 9999px;            /* Badges, pill toggles */
+
+    /* Shadows & Elevation */
+    --shadow-sm: 0 1px 3px rgba(46, 42, 39, 0.05);
+    --shadow-card: 0 4px 12px rgba(46, 42, 39, 0.04), 0 1px 3px rgba(46, 42, 39, 0.03);
+    --shadow-dialog: 0 12px 32px rgba(46, 42, 39, 0.12);
+
+    /* Spacing Units */
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    --space-2xl: 3rem;
+
+    /* Transitions */
+    --transition-fast: 150ms ease;
+    --transition-base: 200ms ease;
+    --transition-slow: 300ms ease;
+
+    /* Touch target */
+    --touch-target-min: 44px;
+  }
+
+  [data-theme="dark"] {
+    /* Surfaces & Canvas */
+    --color-bg-canvas: #1A1816;
+    --color-bg-surface: #24211E;
+    --color-bg-surface-warm: #2C2825;
+    --color-bg-input: #2D2926;
+    --color-border-subtle: #38332E;
+    --color-border-strong: #4A443E;
+    --color-border-focus: #D98C64;
+
+    /* Brand & Domestic Status */
+    --color-primary: #D98C64;
+    --color-primary-hover: #E69D76;
+    --color-primary-light: #382820;
+    --color-secondary: #97B897;
+    --color-secondary-hover: #A8C9A8;
+    --color-secondary-light: #243024;
+    --color-warning: #F0CF7D;
+    --color-warning-hover: #F8DC8F;
+    --color-warning-light: #38311F;
+    --color-warning-text: #F0CF7D;
+    --color-danger: #E27B7B;
+    --color-danger-hover: #EE8F8F;
+    --color-danger-light: #382020;
+    --color-info: #8AAEC7;
+    --color-info-hover: #9BBFD8;
+    --color-info-light: #202A33;
+
+    /* Text & Typography */
+    --color-text-primary: #F5EFE6;
+    --color-text-secondary: #C8BFB5;
+    --color-text-muted: #9E948A;
+    --color-text-inverse: #1A1816;
+
+    /* Backdrop & Overlay */
+    --color-backdrop: rgba(0, 0, 0, 0.6);
+
+    /* Shadows & Elevation */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.25);
+    --shadow-dialog: 0 12px 32px rgba(0, 0, 0, 0.5);
+  }
+}
