@@ -7,6 +7,9 @@ authors = [
     { name = "Diego Rivera", email = "diego.rivera.estefano@gmail.com" }
 ]
 requires-python = ">=3.14"
+classifiers = [
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
   "argon2-cffi==25.1.0",
@@ -220,6 +223,6 @@ js.indent_size = 2
 [tool.setuptools]
 packages = ["home_erp", "config"]
 
-[build-system]
-requires = ["uv_build>=0.12.19,<0.13.0"]
-build-backend = "uv_build"
+#[build-system]
+#requires = ["uv_build>=0.12.19,<0.13.0"]
+#build-backend = "uv_build"
