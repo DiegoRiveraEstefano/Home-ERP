@@ -1,0 +1,14 @@
+{# Component: avatar.html #}
+{# Parameters: user (User instance), initials, image_url, size (sm|md|lg), extra_classes #}
+<div class="avatar avatar-{{ size|default:'md' }}{% if extra_classes %} {{ extra_classes }}{% endif %}"
+     title="{% if user %}{{ user.get_full_name|default:user.username }}{% endif %}">
+  {% if image_url %}
+    <img src="{{ image_url }}" alt="{% if user %}{{ user.username }}{% else %}Avatar{% endif %}">
+  {% elif initials %}
+    <span>{{ initials }}</span>
+  {% elif user %}
+    <span>{{ user.username|make_list|first|upper }}</span>
+  {% else %}
+    <span>?</span>
+  {% endif %}
+</div>

@@ -1,0 +1,13 @@
+{# Component: alert.html #}
+{# Parameters: level (info|success|warning|danger), message, dismissible (bool) #}
+<div class="alert alert-{{ level|default:'info' }}" role="alert">
+  <div class="flex items-center gap-xs">
+    <span class="alert-icon">
+      {% if level == 'success' %}✓{% elif level == 'warning' %}⚠{% elif level == 'danger' %}✕{% else %}ℹ{% endif %}
+    </span>
+    <span>{{ message }}</span>
+  </div>
+  {% if dismissible|default:True %}
+    <button type="button" class="alert-close" aria-label="Cerrar" onclick="this.closest('.alert').remove();">&times;</button>
+  {% endif %}
+</div>

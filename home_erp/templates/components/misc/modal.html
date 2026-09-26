@@ -1,0 +1,16 @@
+{# Component: modal.html #}
+{# Parameters: modal_id, title, body, footer, extra_classes #}
+<dialog id="{{ modal_id }}" class="modal{% if extra_classes %} {{ extra_classes }}{% endif %}">
+  <div class="modal-header">
+    <h3 class="modal-title">{{ title }}</h3>
+    <button type="button" class="btn btn-ghost btn-sm" aria-label="Cerrar" onclick="this.closest('dialog').close();">&times;</button>
+  </div>
+  <div class="modal-body">
+    {% if body %}{{ body|safe }}{% endif %}
+  </div>
+  {% if footer %}
+    <div class="modal-footer">
+      {{ footer|safe }}
+    </div>
+  {% endif %}
+</dialog>

@@ -1,0 +1,38 @@
+{# Component: theme_toggle.html #}
+<button type="button"
+        class="btn btn-ghost btn-icon"
+        id="theme-toggle-btn"
+        aria-label="Alternar tema de color"
+        title="Alternar tema claro/oscuro">
+  <span class="theme-icon-light" aria-hidden="true">☼</span>
+  <span class="theme-icon-dark hidden" aria-hidden="true">☽</span>
+</button>
+
+<script>
+  (function() {
+    const btn = document.getElementById('theme-toggle-btn');
+    if (!btn) return;
+    const lightIcon = btn.querySelector('.theme-icon-light');
+    const darkIcon = btn.querySelector('.theme-icon-dark');
+
+    const updateIcons = (theme) => {
+      if (theme === 'dark') {
+        lightIcon.classList.add('hidden');
+        darkIcon.classList.remove('hidden');
+      } else {
+        lightIcon.classList.remove('hidden');
+        darkIcon.classList.add('hidden');
+      }
+    };
+
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    updateIcons(currentTheme);
+
+    btn.addEventListener('click', () => {
+      const active = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', active);
+      localStorage.setItem('home_erp_theme', active);
+      updateIcons(active);
+    });
+  })();
+</script>
