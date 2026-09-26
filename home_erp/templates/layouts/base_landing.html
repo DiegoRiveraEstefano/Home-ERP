@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block app_sidebar %}{# No sidebar on landing page #}{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: var(--space-xl) var(--space-md);">
+  {% block landing_content %}{% endblock %}
+</div>
+{% endblock %}

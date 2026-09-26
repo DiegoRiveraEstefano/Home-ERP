@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:'es' }}" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <title>{% block title %}Home-ERP{% endblock %}</title>
+
+  {# Early theme detection to avoid flash #}
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('home_erp_theme');
+      if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+
+  {# Google Fonts: Newsreader and Fraunces #}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&display=swap" rel="stylesheet">
+
+  {# Unpoly CSS & JS from trusted CDN #}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/unpoly@3.8.0/unpoly.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/unpoly@3.8.0/unpoly.min.js"></script>
+
+  {# Warm Hearth Modern Vanilla CSS #}
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+
+  {# Native Web Components #}
+  <script type="module" src="{% static 'js/components/stepper.js' %}"></script>
+
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  {# Configure Unpoly CSRF token header from meta tag #}
+  <script>
+    if (window.up) {
+      up.network.config.headers['X-CSRFToken'] = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    }
+  </script>
+
+  <div class="app-shell">
+    {% block app_header %}
+      {% include "components/nav/navbar.html" %}
+    {% endblock %}
+
+    {% block app_sidebar %}
+      {% include "components/nav/sidebar.html" %}
+    {% endblock %}
+
+    <main class="app-main" id="main-content">
+      {% block messages %}
+        {% if messages %}
+          <div class="flex flex-col gap-xs" style="margin-bottom: var(--space-md);">
+            {% for message in messages %}
+              {% include "components/misc/alert.html" with level=message.tags message=message.message %}
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endblock %}
+
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

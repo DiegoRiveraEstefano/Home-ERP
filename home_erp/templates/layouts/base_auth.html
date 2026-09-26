@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block app_sidebar %}{# No sidebar on auth pages #}{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center" style="min-height: calc(80vh - 60px);">
+  <div class="card container-sm" style="box-shadow: var(--shadow-dialog);">
+    <div class="text-center" style="margin-bottom: var(--space-md);">
+      <span style="font-size: 2rem;">🏡</span>
+      <h2 style="margin-top: var(--space-xs);">{% block auth_title %}Bienvenido a Home-ERP{% endblock %}</h2>
+      <p class="text-muted" style="margin-bottom: 0;">{% block auth_subtitle %}Gestión doméstica tranquila y organizada{% endblock %}</p>
+    </div>
+    {% block auth_form %}{% endblock %}
+  </div>
+</div>
+{% endblock %}
