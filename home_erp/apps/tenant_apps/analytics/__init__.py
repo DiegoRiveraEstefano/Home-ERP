@@ -1,0 +1,1 @@
+"""Household Analytics application."""
