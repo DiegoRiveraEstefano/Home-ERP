@@ -1,0 +1,46 @@
+{# Component: select.html #}
+{# Parameters: field (Django BoundField) OR name, label, options (tuples or dicts with value, label), selected_value, required, hint, errors #}
+<div class="form-group">
+  {% if field %}
+    {% if field.label %}
+      <label for="{{ field.id_for_label }}">
+        {{ field.label }}
+        {% if field.field.required %}<span class="text-terracotta">*</span>{% endif %}
+      </label>
+    {% endif %}
+    {{ field }}
+    {% if field.help_text %}
+      <span class="form-hint">{{ field.help_text }}</span>
+    {% endif %}
+    {% if field.errors %}
+      {% for error in field.errors %}
+        <span class="form-error">{{ error }}</span>
+      {% endfor %}
+    {% endif %}
+  {% else %}
+    {% if label %}
+      <label for="id_{{ name }}">
+        {{ label }}
+        {% if required %}<span class="text-terracotta">*</span>{% endif %}
+      </label>
+    {% endif %}
+    <select name="{{ name }}"
+            id="id_{{ name }}"
+            {% if required %}required{% endif %}
+            {% if up_validate %}up-validate{% endif %}>
+      {% for opt in options %}
+        <option value="{{ opt.0|default:opt.value }}" {% if opt.0|default:opt.value == selected_value %}selected{% endif %}>
+          {{ opt.1|default:opt.label }}
+        </option>
+      {% endfor %}
+    </select>
+    {% if hint %}
+      <span class="form-hint">{{ hint }}</span>
+    {% endif %}
+    {% if errors %}
+      {% for error in errors %}
+        <span class="form-error">{{ error }}</span>
+      {% endfor %}
+    {% endif %}
+  {% endif %}
+</div>

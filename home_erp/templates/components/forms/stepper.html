@@ -1,0 +1,27 @@
+{# Component: stepper.html #}
+{# Parameters: name, label, value, min, max, step, hint #}
+<div class="form-group">
+  {% if label %}
+    <label for="id_{{ name }}">{{ label }}</label>
+  {% endif %}
+  <quantity-stepper name="{{ name }}"
+                    value="{{ value|default:'1' }}"
+                    min="{{ min|default:'0' }}"
+                    max="{{ max|default:'9999' }}"
+                    step="{{ step|default:'1' }}">
+    {# Fallback before custom element upgrade #}
+    <div class="stepper">
+      <input type="number"
+             class="stepper-input"
+             name="{{ name }}"
+             id="id_{{ name }}"
+             value="{{ value|default:'1' }}"
+             min="{{ min|default:'0' }}"
+             max="{{ max|default:'9999' }}"
+             step="{{ step|default:'1' }}">
+    </div>
+  </quantity-stepper>
+  {% if hint %}
+    <span class="form-hint">{{ hint }}</span>
+  {% endif %}
+</div>

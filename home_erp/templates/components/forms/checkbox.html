@@ -1,0 +1,25 @@
+{# Component: checkbox.html #}
+{# Parameters: field (Django BoundField) OR name, label, checked, hint, disabled #}
+<div class="form-group">
+  <label class="flex items-center gap-xs" style="cursor: pointer; margin-bottom: 0;">
+    {% if field %}
+      {{ field }}
+      <span>{{ field.label }}</span>
+    {% else %}
+      <input type="checkbox"
+             name="{{ name }}"
+             id="id_{{ name }}"
+             {% if checked %}checked{% endif %}
+             {% if disabled %}disabled{% endif %}>
+      <span>{{ label }}</span>
+    {% endif %}
+  </label>
+  {% if hint %}
+    <span class="form-hint" style="margin-left: 1.5rem;">{{ hint }}</span>
+  {% endif %}
+  {% if field and field.errors %}
+    {% for error in field.errors %}
+      <span class="form-error" style="margin-left: 1.5rem;">{{ error }}</span>
+    {% endfor %}
+  {% endif %}
+</div>
