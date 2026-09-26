@@ -1,0 +1,14 @@
+services:
+  docs:
+    build:
+      context: .
+      dockerfile: compose/docs/Dockerfile
+    image: home_erp_docs:latest
+    container_name: home_erp_docs
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./docs:/app/docs
+      - ./home_erp:/app/home_erp
+      - ./pyproject.toml:/app/pyproject.toml:ro

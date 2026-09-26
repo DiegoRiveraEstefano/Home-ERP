@@ -1,0 +1,215 @@
+services:
+  postgres:
+    image: supabase/postgres:15.8.1.085
+    container_name: home_erp_staging_postgres
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-home_erp}
+    volumes:
+      - postgres_staging_data:/var/lib/postgresql/data
+      - ./compose/postgresql/postgresql.conf:/etc/postgresql/postgresql.conf:ro
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d home_erp"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - default
+      - coolify
+
+  redis:
+    image: redis:7.4-alpine
+    container_name: home_erp_staging_redis
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    volumes:
+      - redis_staging_data:/data
+      - ./compose/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    command: redis-server /usr/local/etc/redis/redis.conf
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - default
+      - coolify
+
+  seaweedfs:
+    image: chrislusf/seaweedfs:latest
+    container_name: home_erp_staging_seaweedfs
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    volumes:
+      - seaweedfs_staging_data:/data
+      - ./compose/seaweedfs/s3.json:/etc/seaweedfs/s3.json:ro
+    command: "server -dir=/data -s3 -s3.port=8333 -s3.config=/etc/seaweedfs/s3.json"
+    networks:
+      - default
+      - coolify
+
+  web:
+    build:
+      context: .
+      dockerfile: compose/django/Dockerfile
+    image: home_erp_web:staging
+    container_name: home_erp_staging_web
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      seaweedfs:
+        condition: service_started
+    env_file:
+      - path: .env
+        required: false
+    command: >
+      sh -c "python manage.py collectstatic --noinput -c &&
+             python manage.py compress &&
+             granian --interface wsgi config.wsgi:application --host 0.0.0.0 --port 8000 --workers 4 --blocking-threads 2 --runtime-mode mt --workers-lifetime 30m --workers-kill-timeout 30 --workers-max-rss 600 --rss-sample-interval 30 --rss-samples 2 --respawn-failed-workers --backpressure 128 --backlog 2048"
+    volumes:
+      - staticfiles_data:/app/staticfiles
+      - media_data:/app/media
+      - logs_data:/app/logs
+    networks:
+      - default
+      - coolify
+
+  worker_io_heavy:
+    build:
+      context: .
+      dockerfile: compose/django/Dockerfile
+    image: home_erp_worker_io_heavy:staging
+    container_name: home_erp_staging_worker_io_heavy
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - path: .env
+        required: false
+    command: celery -A config worker -l info -Q io_heavy -P gevent -c 25 --hostname=io_heavy@%h
+    volumes:
+      - media_data:/app/media
+      - logs_data:/app/logs
+    networks:
+      - default
+      - coolify
+
+  worker_cpu_heavy:
+    build:
+      context: .
+      dockerfile: compose/django/Dockerfile
+    image: home_erp_worker_cpu_heavy:staging
+    container_name: home_erp_staging_worker_cpu_heavy
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - path: .env
+        required: false
+    command: celery -A config worker -l info -Q cpu_heavy -P prefork -c 1 --hostname=cpu_heavy@%h
+    volumes:
+      - media_data:/app/media
+      - logs_data:/app/logs
+    networks:
+      - default
+      - coolify
+
+  worker_default:
+    build:
+      context: .
+      dockerfile: compose/django/Dockerfile
+    image: home_erp_worker_default:staging
+    container_name: home_erp_staging_worker_default
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - path: .env
+        required: false
+    command: celery -A config worker -l info -Q default -P prefork -c 1 --hostname=default@%h
+    volumes:
+      - media_data:/app/media
+      - logs_data:/app/logs
+    networks:
+      - default
+      - coolify
+
+  beat:
+    build:
+      context: .
+      dockerfile: compose/django/Dockerfile
+    image: home_erp_beat:staging
+    container_name: home_erp_staging_beat
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - path: .env
+        required: false
+    command: celery -A config beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    volumes:
+      - media_data:/app/media
+      - logs_data:/app/logs
+    networks:
+      - default
+      - coolify
+
+  nginx:
+    build:
+      context: .
+      dockerfile: compose/nginx/Dockerfile
+    image: home_erp_nginx:staging
+    container_name: home_erp_staging_nginx
+    restart: unless-stopped
+    depends_on:
+      - web
+    ports:
+      - "${PORT:-80}:80"
+    networks:
+      - default
+      - coolify
+
+volumes:
+  staticfiles_data:
+    driver: local
+  media_data:
+    driver: local
+  logs_data:
+    driver: local
+  postgres_staging_data:
+    driver: local
+  redis_staging_data:
+    driver: local
+  seaweedfs_staging_data:
+    driver: local
+
+networks:
+  default:
+  coolify:
+    name: coolify
+    external: true

@@ -1,0 +1,57 @@
+services:
+  postgres:
+    image: supabase/postgres:15.8.1.085
+    container_name: home_erp_local_postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-home_erp}
+    volumes:
+      - postgres_local_data:/var/lib/postgresql/data
+      - ./compose/postgresql/postgresql.conf:/etc/postgresql/postgresql.conf:ro
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d home_erp"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7.4-alpine
+    container_name: home_erp_local_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_local_data:/data
+      - ./compose/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    command: redis-server /usr/local/etc/redis/redis.conf
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  seaweedfs:
+    image: chrislusf/seaweedfs:latest
+    container_name: home_erp_local_seaweedfs
+    restart: unless-stopped
+    ports:
+      - "8333:8333"
+      - "8888:8888"
+      - "9333:9333"
+    volumes:
+      - seaweedfs_local_data:/data
+      - ./compose/seaweedfs/s3.json:/etc/seaweedfs/s3.json:ro
+    command: "server -dir=/data -s3 -s3.port=8333 -s3.config=/etc/seaweedfs/s3.json"
+
+volumes:
+  postgres_local_data:
+    driver: local
+  redis_local_data:
+    driver: local
+  seaweedfs_local_data:
+    driver: local

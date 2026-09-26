@@ -1,0 +1,19 @@
+{
+  "identities": [
+    {
+      "name": "home_erp",
+      "credentials": [
+        {
+          "accessKey": "home_erp_key",
+          "secretKey": "home_erp_secret"
+        }
+      ],
+      "actions": [
+        "Admin",
+        "Read",
+        "Write",
+        "List"
+      ]
+    }
+  ]
+}
