@@ -40,7 +40,7 @@ dependencies = [
   "django-reversion==6.1.0",
   "django-structlog==10.1.0",
   "django-taggit==6.1.0",
-  "django-tree-queries==0.24.0",
+  "django-tree-queries==0.26.1",
   "django-unfold==0.90.0",
   "django-viewflow==2.2.15",
   "django-waffle==5.0.0",
