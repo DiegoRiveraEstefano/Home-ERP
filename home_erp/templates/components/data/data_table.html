@@ -1,0 +1,30 @@
+{# Component: data_table.html #}
+{# Parameters: headers (list of strings), rows (list of lists or iterable), zebra (bool), empty_text, table_id #}
+<div class="data-table-container"{% if table_id %} id="{{ table_id }}"{% endif %}>
+  <table class="data-table{% if zebra|default:True %} data-table--zebra{% endif %}">
+    {% if headers %}
+      <thead>
+        <tr>
+          {% for header in headers %}
+            <th>{{ header }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+    {% endif %}
+    <tbody>
+      {% for row in rows %}
+        <tr>
+          {% for cell in row %}
+            <td>{{ cell|safe }}</td>
+          {% endfor %}
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="{{ headers|length|default:1 }}" class="text-center text-muted" style="padding: var(--space-xl);">
+            {{ empty_text|default:'No hay datos disponibles.' }}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

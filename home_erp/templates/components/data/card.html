@@ -1,0 +1,23 @@
+{# Component: card.html #}
+{# Parameters: title, subtitle, header_action, body, footer, extra_classes #}
+<div class="card{% if extra_classes %} {{ extra_classes }}{% endif %}">
+  {% if title or header_action %}
+    <div class="card-header">
+      <div>
+        <h3 class="card-title">{{ title }}</h3>
+        {% if subtitle %}<small class="text-muted">{{ subtitle }}</small>{% endif %}
+      </div>
+      {% if header_action %}
+        <div class="card-header-action">{{ header_action|safe }}</div>
+      {% endif %}
+    </div>
+  {% endif %}
+  <div class="card-body">
+    {% if body %}{{ body|safe }}{% endif %}
+  </div>
+  {% if footer %}
+    <div class="card-footer">
+      {{ footer|safe }}
+    </div>
+  {% endif %}
+</div>

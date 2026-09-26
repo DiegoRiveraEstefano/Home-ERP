@@ -1,0 +1,6 @@
+{# Component: badge.html #}
+{# Parameters: label, variant (success|warning|danger|terracotta|info), icon, extra_classes #}
+<span class="badge badge-{{ variant|default:'terracotta' }}{% if extra_classes %} {{ extra_classes }}{% endif %}">
+  {% if icon %}{{ icon|safe }}{% endif %}
+  <span>{{ label }}</span>
+</span>

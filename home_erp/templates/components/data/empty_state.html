@@ -1,0 +1,20 @@
+{# Component: empty_state.html #}
+{# Parameters: title, description, icon, action_label, action_url, action_up_target, action_variant, extra_classes #}
+<div class="empty-state{% if extra_classes %} {{ extra_classes }}{% endif %}">
+  {% if icon %}
+    <div class="empty-state-icon">{{ icon|safe }}</div>
+  {% else %}
+    <div class="empty-state-icon">🧺</div>
+  {% endif %}
+  <h3 class="empty-state-title">{{ title }}</h3>
+  {% if description %}
+    <p class="empty-state-desc">{{ description }}</p>
+  {% endif %}
+  {% if action_label and action_url %}
+    <a href="{{ action_url }}"
+       class="btn btn-{{ action_variant|default:'primary' }}"
+       {% if action_up_target %}up-target="{{ action_up_target }}" up-follow{% endif %}>
+      {{ action_label }}
+    </a>
+  {% endif %}
+</div>

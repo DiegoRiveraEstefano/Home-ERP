@@ -1,0 +1,21 @@
+{# Component: metric_card.html #}
+{# Parameters: label, value, subtitle, trend_label, trend_variant, icon, extra_classes #}
+<div class="metric-card{% if extra_classes %} {{ extra_classes }}{% endif %}">
+  <div class="flex items-center justify-between">
+    <span class="metric-label">{{ label }}</span>
+    {% if icon %}<span class="text-muted">{{ icon|safe }}</span>{% endif %}
+  </div>
+  <div class="metric-value">{{ value }}</div>
+  {% if trend_label or subtitle %}
+    <div class="flex items-center justify-between gap-xs">
+      {% if trend_label %}
+        <span class="badge badge-{{ trend_variant|default:'success' }}">
+          {{ trend_label }}
+        </span>
+      {% endif %}
+      {% if subtitle %}
+        <small class="text-muted">{{ subtitle }}</small>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>
