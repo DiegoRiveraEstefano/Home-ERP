@@ -9,6 +9,7 @@ from django.views.generic import TemplateView
 from drf_spectacular.views import SpectacularAPIView
 from drf_spectacular.views import SpectacularSwaggerView
 from rest_framework.authtoken.views import obtain_auth_token
+from health_check.views import HealthCheckView
 
 urlpatterns = [
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
@@ -42,6 +43,23 @@ urlpatterns = [
     path(
         "chores/",
         include("home_erp.apps.tenant_apps.chores.urls", namespace="chores"),
+    ),
+    path('captcha/', include('captcha.urls')),
+    path(
+        "health/",
+        HealthCheckView.as_view(
+            checks=[  # optional, default is all but 3rd party checks
+                "health_check.Cache",
+                "health_check.DNS",
+                "health_check.Database",
+                "health_check.Mail",
+                "health_check.Storage",
+                "health_check.contrib.psutil.Disk",
+                "health_check.contrib.psutil.Memory",
+                "health_check.contrib.celery.Ping",
+            ],
+        ),
+        name="health_check",
     ),
     # Media files
     *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),

@@ -86,6 +86,11 @@ PRIORITY_APPS = [
     "unfold.contrib.forms",
     "unfold.contrib.inlines",
     "unfold.contrib.import_export",
+    "dal",
+    "dal_alight",
+    "dal_queryset_sequence",
+    "dal_alight_queryset_sequence",
+    "pghistory.admin",
 ]
 DJANGO_APPS = [
     "django.contrib.auth",
@@ -116,6 +121,15 @@ THIRD_PARTY_APPS = [
     "taggit",
     "imagekit",
     "dbbackup",
+    "widget_tweaks",
+    "recurrence",
+    "captcha",
+    "cacheops",
+    "health_check",
+    "django_tables2",
+    "pghistory",
+    "django_pgviews",
+    "pgbulk",
 ]
 
 LOCAL_APPS = [
@@ -196,6 +210,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
+    "pghistory.middleware.HistoryMiddleware",
 ]
 
 CDNS = {"cdnjs.cloudflare.com", "cdn.jsdelivr.net", "unpkg.com", SELF}
@@ -445,4 +460,13 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "1.0.0",
     "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAdminUser"],
     "SCHEMA_PATH_PREFIX": "/api/",
+}
+
+
+# django-cacheops
+# ------------------------------------------------------------------------------
+CACHEOPS_REDIS = REDIS_URL
+CACHEOPS = {
+    "*.*": {"ops": ("fetch", "get"), "timeout": 60*60},
+    'auth.user': {'ops': 'get', 'timeout': 60*15},
 }
