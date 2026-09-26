@@ -1,0 +1,23 @@
+{# Component: dropdown.html #}
+{# Parameters: label, icon, items (list of {label, url, is_danger, up_target, up_follow}), extra_classes #}
+<details class="dropdown{% if extra_classes %} {{ extra_classes }}{% endif %}">
+  <summary class="btn btn-outline btn-sm">
+    {% if icon %}{{ icon|safe }}{% endif %}
+    {% if label %}<span>{{ label }}</span>{% else %}<span>•••</span>{% endif %}
+  </summary>
+  <div class="dropdown-menu">
+    {% for item in items %}
+      {% if item.divider %}
+        <hr style="margin: var(--space-xs) 0;">
+      {% else %}
+        <a href="{{ item.url }}"
+           class="dropdown-item{% if item.is_danger %} dropdown-item--danger{% endif %}"
+           {% if item.up_target %}up-target="{{ item.up_target }}"{% endif %}
+           {% if item.up_follow %}up-follow{% endif %}>
+          {% if item.icon %}{{ item.icon|safe }}{% endif %}
+          <span>{{ item.label }}</span>
+        </a>
+      {% endif %}
+    {% endfor %}
+  </div>
+</details>

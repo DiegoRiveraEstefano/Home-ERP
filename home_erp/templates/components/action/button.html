@@ -1,0 +1,23 @@
+{# Component: button.html #}
+{# Parameters: label, url, type, variant, size, icon, disabled, up_target, up_follow, up_layer, extra_classes, attrs #}
+{% if url %}
+<a href="{{ url }}"
+   class="btn btn-{{ variant|default:'primary' }}{% if size %} btn-{{ size }}{% endif %}{% if extra_classes %} {{ extra_classes }}{% endif %}"
+   {% if up_target %}up-target="{{ up_target }}"{% endif %}
+   {% if up_follow %}up-follow{% endif %}
+   {% if up_layer %}up-layer="{{ up_layer }}"{% endif %}
+   {% if attrs %}{{ attrs|safe }}{% endif %}>
+  {% if icon %}<span class="btn-icon-wrapper">{{ icon|safe }}</span>{% endif %}
+  {% if label %}<span>{{ label }}</span>{% endif %}
+</a>
+{% else %}
+<button type="{{ type|default:'button' }}"
+        class="btn btn-{{ variant|default:'primary' }}{% if size %} btn-{{ size }}{% endif %}{% if extra_classes %} {{ extra_classes }}{% endif %}"
+        {% if disabled %}disabled{% endif %}
+        {% if up_target %}up-target="{{ up_target }}"{% endif %}
+        {% if up_layer %}up-layer="{{ up_layer }}"{% endif %}
+        {% if attrs %}{{ attrs|safe }}{% endif %}>
+  {% if icon %}<span class="btn-icon-wrapper">{{ icon|safe }}</span>{% endif %}
+  {% if label %}<span>{{ label }}</span>{% endif %}
+</button>
+{% endif %}
