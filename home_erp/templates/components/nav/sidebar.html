@@ -1,0 +1,57 @@
+{# Component: sidebar.html #}
+{# Domestic Lateral Navigation Menu #}
+<aside class="app-sidebar" aria-label="Navegación principal">
+  <nav class="flex flex-col gap-xs">
+    <small class="text-muted" style="text-transform: uppercase; letter-spacing: 0.05em; padding: 0.25rem 0.5rem;">
+      Gestión Doméstica
+    </small>
+
+    <a href="/"
+       class="btn btn-ghost justify-start{% if request.path == '/' %} btn-secondary{% endif %}"
+       up-follow up-target=".app-main">
+      <span>📊</span>
+      <span>Panel General</span>
+    </a>
+
+    <a href="/inventory/"
+       class="btn btn-ghost justify-start{% if '/inventory/' in request.path %} btn-secondary{% endif %}"
+       up-follow up-target=".app-main">
+      <span>🥫</span>
+      <span>Despensa e Inventario</span>
+    </a>
+
+    <a href="/finances/"
+       class="btn btn-ghost justify-start{% if '/finances/' in request.path %} btn-secondary{% endif %}"
+       up-follow up-target=".app-main">
+      <span>💰</span>
+      <span>Finanzas y Presupuesto</span>
+    </a>
+
+    <a href="/chores/"
+       class="btn btn-ghost justify-start{% if '/chores/' in request.path %} btn-secondary{% endif %}"
+       up-follow up-target=".app-main">
+      <span>🧹</span>
+      <span>Tareas del Hogar</span>
+    </a>
+
+    <a href="/assets/"
+       class="btn btn-ghost justify-start{% if '/assets/' in request.path %} btn-secondary{% endif %}"
+       up-follow up-target=".app-main">
+      <span>🔧</span>
+      <span>Activos y Equipos</span>
+    </a>
+
+    <hr style="margin: var(--space-sm) 0;">
+
+    <small class="text-muted" style="text-transform: uppercase; letter-spacing: 0.05em; padding: 0.25rem 0.5rem;">
+      Configuración
+    </small>
+
+    <a href="/households/"
+       class="btn btn-ghost justify-start{% if '/households/' in request.path %} btn-secondary{% endif %}"
+       up-follow up-target=".app-main">
+      <span>🏠</span>
+      <span>Mi Hogar</span>
+    </a>
+  </nav>
+</aside>

@@ -1,0 +1,42 @@
+{# Component: navbar.html #}
+{# Domestic Top Navbar #}
+<header class="app-header">
+  <div class="flex items-center gap-md">
+    <button type="button"
+            class="btn btn-ghost btn-icon"
+            aria-label="Abrir menú"
+            onclick="document.querySelector('.app-sidebar')?.classList.toggle('is-open');">
+      ☰
+    </button>
+    <a href="/" class="flex items-center gap-xs" style="text-decoration: none; color: var(--color-text-primary);">
+      <span style="font-size: 1.25rem;">🏡</span>
+      <span style="font-family: var(--font-serif); font-size: 1.25rem; font-weight: 700;">Home-ERP</span>
+    </a>
+    {% if request.household %}
+      <span class="badge badge-terracotta">
+        {{ request.household.name }}
+      </span>
+    {% endif %}
+  </div>
+
+  <div class="flex items-center gap-sm">
+    {% include "components/misc/theme_toggle.html" %}
+
+    {% if request.user.is_authenticated %}
+      <div class="dropdown">
+        <summary class="flex items-center gap-xs" style="cursor: pointer;">
+          {% include "components/misc/avatar.html" with user=request.user size="sm" %}
+          <span class="text-secondary" style="font-size: 0.875rem;">{{ request.user.username }}</span>
+        </summary>
+        <div class="dropdown-menu">
+          <a href="/users/~redirect/" class="dropdown-item" up-follow>Perfil</a>
+          <a href="/households/settings/" class="dropdown-item" up-follow>Ajustes de Hogar</a>
+          <hr style="margin: var(--space-xs) 0;">
+          <a href="/accounts/logout/" class="dropdown-item dropdown-item--danger">Cerrar sesión</a>
+        </div>
+      </div>
+    {% else %}
+      <a href="/accounts/login/" class="btn btn-outline btn-sm">Iniciar sesión</a>
+    {% endif %}
+  </div>
+</header>

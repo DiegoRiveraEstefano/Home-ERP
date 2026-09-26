@@ -1,0 +1,40 @@
+{# Component: pagination.html #}
+{# Parameters: page_obj (Django Page), up_target #}
+{% if page_obj.has_other_pages %}
+<nav class="flex items-center justify-between" aria-label="Paginación" style="padding-top: var(--space-md);">
+  <div>
+    <small class="text-muted">
+      Mostrando página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+      ({{ page_obj.paginator.count }} registros en total)
+    </small>
+  </div>
+
+  <div class="flex items-center gap-xs">
+    {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}"
+         class="btn btn-outline btn-sm"
+         up-follow up-target="{{ up_target|default:'.app-main' }}"
+         aria-label="Página anterior">
+        &larr; Anterior
+      </a>
+    {% else %}
+      <button type="button" class="btn btn-outline btn-sm" disabled>&larr; Anterior</button>
+    {% endif %}
+
+    <span class="badge badge-terracotta" style="padding: 0.375rem 0.75rem;">
+      {{ page_obj.number }}
+    </span>
+
+    {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}"
+         class="btn btn-outline btn-sm"
+         up-follow up-target="{{ up_target|default:'.app-main' }}"
+         aria-label="Página siguiente">
+        Siguiente &rarr;
+      </a>
+    {% else %}
+      <button type="button" class="btn btn-outline btn-sm" disabled>Siguiente &rarr;</button>
+    {% endif %}
+  </div>
+</nav>
+{% endif %}

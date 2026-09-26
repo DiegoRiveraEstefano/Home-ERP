@@ -1,0 +1,16 @@
+{# Component: tabs.html #}
+{# Parameters: tabs (list of {label, url, is_active, up_target, count}) #}
+<nav class="tabs" aria-label="Pestañas de navegación">
+  {% for tab in tabs %}
+    <a href="{{ tab.url }}"
+       class="tab-item{% if tab.is_active %} tab-item--active{% endif %}"
+       {% if tab.up_target %}up-target="{{ tab.up_target }}" up-follow{% endif %}>
+      <span>{{ tab.label }}</span>
+      {% if tab.count is not None %}
+        <span class="badge badge-terracotta" style="margin-left: var(--space-xs); font-size: 0.7rem;">
+          {{ tab.count }}
+        </span>
+      {% endif %}
+    </a>
+  {% endfor %}
+</nav>

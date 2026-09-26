@@ -1,0 +1,19 @@
+{# Component: breadcrumbs.html #}
+{# Parameters: items (list of {label, url}) #}
+{% if items %}
+<nav aria-label="Migas de pan" class="breadcrumbs">
+  <div class="breadcrumb-item">
+    <a href="/" up-follow up-target=".app-main">Inicio</a>
+  </div>
+  {% for item in items %}
+    <span class="breadcrumb-separator" aria-hidden="true">/</span>
+    <div class="breadcrumb-item">
+      {% if item.url and not forloop.last %}
+        <a href="{{ item.url }}" up-follow up-target=".app-main">{{ item.label }}</a>
+      {% else %}
+        <span class="text-primary font-semibold">{{ item.label }}</span>
+      {% endif %}
+    </div>
+  {% endfor %}
+</nav>
+{% endif %}
