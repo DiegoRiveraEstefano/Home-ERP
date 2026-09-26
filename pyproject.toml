@@ -91,7 +91,7 @@ test = [
   "coverage==7.13.5",
   "django-coverage-plugin==3.2.2",
   "hypothesis>=6.155.2",
-  "pytest==9.0.3",
+  "pytest==9.1.1",
   "pytest-django==4.12.0",
   "pytest-sugar==1.1.1",
 ]
