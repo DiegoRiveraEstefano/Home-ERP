@@ -100,7 +100,7 @@ docs = [
   "sphinx-autobuild==2025.8.25",
 ]
 stub = [
-  "django-stubs[compatible-mypy]==6.0.3",
+  "django-stubs[compatible-mypy]==6.1.1",
   "djangorestframework-stubs==3.16.9",
   "celery-types==0.26.0",
 ]
