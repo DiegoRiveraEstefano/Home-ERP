@@ -3,6 +3,7 @@
 import uuid6
 from django.db import models
 from django.utils import timezone
+from django.utils.text import slugify
 
 
 class UUIDv7ModelMixin(models.Model):
@@ -90,6 +91,46 @@ class SoftDeleteModelMixin(models.Model):
         self.is_deleted = False
         self.deleted_at = None
         self.save(update_fields=["is_deleted", "deleted_at"])
+
+
+class DisplayOrderModelMixin(models.Model):
+    """Abstract model mixin providing an integer ordering field."""
+
+    display_order = models.PositiveIntegerField(
+        default=0,
+        db_index=True,
+        help_text="Numerical display order index.",
+    )
+
+    class Meta:
+        abstract = True
+        ordering = ["display_order"]
+
+
+class SluggedModelMixin(models.Model):
+    """Abstract model mixin adding an auto-populated slug field."""
+
+    slug = models.SlugField(
+        max_length=255,
+        blank=True,
+        help_text="URL-friendly identifier.",
+    )
+
+    class Meta:
+        abstract = True
+
+    def save(self, *args, **kwargs) -> None:
+        if not self.slug:
+            self.slug = slugify(self.get_slug_source())[:255]
+        super().save(*args, **kwargs)
+
+    def get_slug_source(self) -> str:
+        """Derive text to slugify, checking common attributes."""
+        for attr in ("name", "title", "description"):
+            val = getattr(self, attr, None)
+            if val:
+                return str(val)
+        return str(getattr(self, "pk", "") or "")
 
 
 class BaseModel(UUIDv7ModelMixin, TimeStampedModelMixin):

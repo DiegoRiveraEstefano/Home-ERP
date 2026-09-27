@@ -1,106 +1,118 @@
-"""Reusable abstract model mixins for Home-ERP domestic domain models."""
+"""FilterSet mixins for household isolation, multi-field search, and date ranges."""
 
-import uuid6
-from django.db import models
-from django.utils import timezone
+import uuid
+from typing import Any
+
+import django_filters
+from django.db.models import Q
+from django.db.models import QuerySet
+
+from home_erp.shared.tenancy import get_current_household_id
 
 
-class UUIDv7ModelMixin(models.Model):
-    """Abstract model mixin providing a time-ordered UUIDv7 primary key."""
+class HouseholdScopedFilterSetMixin:
+    """
+    Mixin for django_filters.FilterSet that scopes querysets to active household.
 
-    id = models.UUIDField(
-        primary_key=True,
-        default=uuid6.uuid7,
-        editable=False,
-        help_text="Time-ordered UUIDv7 primary key.",
+    Resolves household_id from explicit kwarg, request, or ContextVar.
+    """
+
+    household_id: uuid.UUID | None
+    search_fields: list[str]
+
+    def __init__(
+        self,
+        *args: Any,
+        household_id: uuid.UUID | str | None = None,
+        **kwargs: Any,
+    ) -> None:
+        raw_id = household_id
+        if raw_id is None and "request" in kwargs and kwargs["request"] is not None:
+            req = kwargs["request"]
+            if hasattr(req, "household") and getattr(req.household, "id", None):
+                raw_id = req.household.id
+            elif hasattr(req, "session"):
+                raw_id = req.session.get("active_household_id")
+        if raw_id is None:
+            raw_id = get_current_household_id()
+
+        if raw_id is not None:
+            self.household_id = (
+                raw_id if isinstance(raw_id, uuid.UUID) else uuid.UUID(str(raw_id))
+            )
+        else:
+            self.household_id = None
+
+        super().__init__(*args, **kwargs)
+
+    @property
+    def qs(self) -> QuerySet[Any]:
+        parent_qs = super().qs
+        if self.household_id is not None and hasattr(parent_qs.model, "household_id"):
+            return parent_qs.filter(household_id=self.household_id)
+        return parent_qs
+
+
+class MultiFieldSearchFilterMixin:
+    """
+    Mixin adding a 'q' search filter that searches across multiple fields.
+
+    Specify `search_fields = ["name", "description", ...]` on the FilterSet.
+    """
+
+    search_fields: list[str] = []
+
+    q = django_filters.CharFilter(
+        method="filter_search",
+        label="Search",
+        help_text="Search across multiple textual fields.",
     )
 
-    class Meta:
-        abstract = True
+    def filter_search(
+        self,
+        queryset: QuerySet[Any],
+        name: str,
+        value: str,
+    ) -> QuerySet[Any]:
+        if not value or not self.search_fields:
+            return queryset
+
+        query = Q()
+        for field in self.search_fields:
+            query |= Q(**{f"{field}__icontains": value.strip()})
+        return queryset.filter(query)
 
 
-class TimeStampedModelMixin(models.Model):
-    """Abstract model mixin providing creation and modification timestamps."""
+class DateRangeFilterMixin:
+    """Mixin adding standard start_date and end_date filters."""
 
-    created_at = models.DateTimeField(
-        auto_now_add=True,
-        db_index=True,
-        help_text="Timestamp when this record was created.",
+    date_range_field: str = "created_at"
+
+    start_date = django_filters.DateFilter(
+        method="filter_start_date",
+        label="From Date",
     )
-    updated_at = models.DateTimeField(
-        auto_now=True,
-        help_text="Timestamp when this record was last modified.",
-    )
-
-    class Meta:
-        abstract = True
-
-
-class HouseholdScopedModelMixin(models.Model):
-    """Abstract model mixin ensuring multi-household isolation and data scoping."""
-
-    household_id = models.UUIDField(
-        db_index=True,
-        editable=False,
-        help_text="Mandatory Household UUID for domestic tenancy isolation.",
-    )
-
-    class Meta:
-        abstract = True
-
-
-class ActiveStatusModelMixin(models.Model):
-    """Abstract model mixin providing an active status toggle."""
-
-    is_active = models.BooleanField(
-        default=True,
-        db_index=True,
-        help_text="Designates whether this record is considered active.",
+    end_date = django_filters.DateFilter(
+        method="filter_end_date",
+        label="To Date",
     )
 
-    class Meta:
-        abstract = True
+    def filter_start_date(
+        self,
+        queryset: QuerySet[Any],
+        name: str,
+        value: Any,
+    ) -> QuerySet[Any]:
+        if not value:
+            return queryset
+        return queryset.filter(**{f"{self.date_range_field}__date__gte": value})
 
-
-class SoftDeleteModelMixin(models.Model):
-    """Abstract model mixin providing soft delete functionality with timestamps."""
-
-    is_deleted = models.BooleanField(
-        default=False,
-        db_index=True,
-        help_text="Designates whether this record has been marked as deleted.",
-    )
-    deleted_at = models.DateTimeField(
-        null=True,
-        blank=True,
-        help_text="Timestamp when this record was soft-deleted.",
-    )
-
-    class Meta:
-        abstract = True
-
-    def soft_delete(self) -> None:
-        """Mark record as soft-deleted."""
-        self.is_deleted = True
-        self.deleted_at = timezone.now()
-        self.save(update_fields=["is_deleted", "deleted_at"])
-
-    def restore(self) -> None:
-        """Restore soft-deleted record."""
-        self.is_deleted = False
-        self.deleted_at = None
-        self.save(update_fields=["is_deleted", "deleted_at"])
-
-
-class BaseModel(UUIDv7ModelMixin, TimeStampedModelMixin):
-    """Abstract base model combining UUIDv7 primary key and timestamp tracking."""
-
-    class Meta:
-        abstract = True
-
-
-class HouseholdScopedModel(BaseModel, HouseholdScopedModelMixin):
-    """Abstract base model combining UUIDv7, timestamps, and tenancy scoping."""
-
-    class Meta:
-        abstract = True
+    def filter_end_date(
+        self,
+        queryset: QuerySet[Any],
+        name: str,
+        value: Any,
+    ) -> QuerySet[Any]:
+        if not value:
+            return queryset
+        return queryset.filter(**{f"{self.date_range_field}__date__lte": value})
