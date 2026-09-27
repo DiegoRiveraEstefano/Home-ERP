@@ -5,6 +5,7 @@ from django.conf import settings
 def test_domestic_apps_installed():
     """Verify that all domestic domain apps are installed in INSTALLED_APPS."""
     expected_apps = [
+        "home_erp.shared",
         "home_erp.apps.common_apps.users",
         "home_erp.apps.tenant_apps.households",
         "home_erp.apps.tenant_apps.finances",

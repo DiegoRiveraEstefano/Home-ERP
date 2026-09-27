@@ -127,12 +127,14 @@ THIRD_PARTY_APPS = [
     "cacheops",
     "health_check",
     "django_tables2",
+    "pgtrigger",
     "pghistory",
     "django_pgviews",
     "pgbulk",
 ]
 
 LOCAL_APPS = [
+    "home_erp.shared",
     "home_erp.apps.common_apps.users",
     "home_erp.apps.tenant_apps.households",
     "home_erp.apps.tenant_apps.finances",
